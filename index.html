@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en-us">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Giphy | Darrin Davis</title>
+
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+	<!-- External Asset Stylesheets -->
+	<!-- <link rel="stylesheet" type="text/css" href="assets/css/reset.css"> -->
+	<link rel="stylesheet" type="text/css" href="assets/css/style.css">
+
+	<!-- jQuery 1.x -->
+	<script
+	  src="https://code.jquery.com/jquery-1.12.4.js"
+	  integrity="sha256-Qw82+bXyGq6MydymqBxNPYTaUXXq7c8v3CwiYwLLNXU="
+	  crossorigin="anonymous">
+	</script>
+
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous">
+	</script>
+
+	<!-- AJAX -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+</head>
+
+
+<body>
+	
+	<div>
+
+		<h1>Dream Car Search</h1>
+
+
+
+	    <form id="car-form">
+	      <label for="car-input">Add Your Dream Car: </label>
+	      <input type="text" id="car-input"><br>
+	      <input id="add-car" type="submit" value="Vroom Vroom">
+	    </form>	
+	    
+		<br>
+	    <!-- New buttons will go here -->
+	    <div id="buttons-view"></div>
+		
+		<br><br>
+
+	    <!-- Cars will go here -->
+	    <div id="cars-view"></div>
+
+
+
+	</div>
+
+	<div id="addCarsHere"></div>
+
+	
+	<script type="text/javascript">
+
+		var topics = ["Porsche", "Ferrari", "Lamborghini","Bugatti", "Maserati", "Bentley", "Audi", "Jaguar"];
+		var i;
+
+		// Create buttons 
+		function generateButtons() {
+
+
+			$("#buttons-view").empty();
+
+			// Looping through array of cars and assigning them a button
+			for (var i = 0; i < topics.length; i++) {
+
+
+				var a = $("<button>");
+				// adding car class
+				a.addClass("car");
+				// Adding car attribute
+				a.attr("car-name", topics[i]);
+				// assigning button text per car name
+				a.text(topics[i]);
+				// Adding button to the div
+				$("#buttons-view").append(a);
+			}
+		}
+
+
+		// Event listener to retrieve the car images once the car button is clicked
+		$(document).on("click", ".car", showMyDreamCar);
+
+
+
+        // Event Handler
+	    $("#add-car").on("click", function(event) {
+
+	        event.preventDefault();
+
+
+	        var car = $("#car-input").val().trim();
+
+	        // Pushing text box content to the array
+	        topics.push(car);
+
+
+	        generateButtons();
+	    });
+
+		generateButtons();
+
+
+//The codes above currently works so that the buttons are generated from input and array
+
+
+
+		function showMyDreamCar() {
+
+			var car = $(this).attr("car-name");
+			var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + car + "&api_key=F4j9EUwwmB60Tn2pwjldRt6Xx9RiuuVb&limit=10";
+
+
+			console.log(queryURL);
+
+
+	        $.ajax({
+	        	url: queryURL, 
+	        	method: "GET"
+	        })
+	        .done(function(response) {
+	          
+		        for(var i = 0; i < 10; i++) {
+
+
+				var stillImgURL = response["data"][i]["images"]["fixed_height_still"]["url"];
+				var animatedImgURL = response["data"][i]["images"]["fixed_height"]["url"];
+				var ratingP = response["data"][i]["rating"];
+				
+				// Assigning element to hold the images
+				var image = $("<img>").attr("src", stillImgURL);
+				var image = $("<img>").attr("src", animatedImgURL);
+				
+				// Creating class and p tag
+				var carDiv = $("<div class='car'>");
+				var p = $("<p>").text("Rated: " + ratingP);
+				
+				// Appending image and p tag to div
+				carDiv.append(image);
+				carDiv.append(p);
+				
+				$("#cars-view").prepend(carDiv);
+
+		        console.log("Response: "+ response.data);
+				console.log("Car: " + car);
+				console.log("Still Image URL: " + stillImgURL);
+				console.log("Animated Image URL: " + animatedImgURL);
+				console.log("Rating: " + ratingP);
+				}
+				
+	        });
+		}
+
+	</script>
+
+
+
+<!-- 	Java Code from game.js -->
+<!-- <script src="assets/javascript/app.js"></script> -->
+
+</body>
+
+</html>
