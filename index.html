@@ -35,8 +35,6 @@
 
 		<h1>Dream Car Search</h1>
 
-
-
 	    <form id="car-form">
 	      <label for="car-input">Add Your Dream Car: </label>
 	      <input type="text" id="car-input"><br>
@@ -52,33 +50,25 @@
 	    <!-- Cars will go here -->
 	    <div id="cars-view"></div>
 
-
-
 	</div>
 
-	<!-- <div id="addCarsHere"></div> -->
 
-	
 	<script type="text/javascript">
 
 		var topics = ["Porsche 911", "Ferrari 812", "Lamborghini","Bugatti Chiron", "Maserati", "Bentley", "Audi", "Tesla"];
 		var i;
 
-
-
 		// Create buttons 
 		function generateButtons() {
-
 
 			$("#buttons-view").empty();
 
 			// Looping through array of cars and assigning them a button
 			for (var i = 0; i < topics.length; i++) {
 
-
 				var a = $("<button>");
 				// adding car class
-				a.addClass("car");
+				a.addClass("car-btn");
 				// Adding car attribute
 				a.attr("car-name", topics[i]);
 				// assigning button text per car name
@@ -90,8 +80,7 @@
 
 
 		// Event listener to retrieve the car images once the car button is clicked
-		$(document).on("click", ".car", showMyDreamCar);
-
+		$(document).on("click", ".car-btn", showMyDreamCar);
 
 
         // Takes searched car and push it to the array
@@ -112,25 +101,18 @@
 
 	        generateButtons();
 
-
 	    });
 
 		generateButtons();
 
 
-
-
-
-
-
+		// Retrieves images from Giphy based on car search
 		function showMyDreamCar() {
 
 			var car = $(this).attr("car-name");
 			var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + car + "&api_key=F4j9EUwwmB60Tn2pwjldRt6Xx9RiuuVb&limit=10";
 
-
 			console.log(queryURL);
-
 
 	        $.ajax({
 	        	url: queryURL, 
@@ -147,15 +129,9 @@
 					
 					// Assigning element to hold the still and animated images
 					var image = $("<img>").attr("src", stillImgURL);
-
 					image.attr("data-StillURL", "stillImgURL");
-
-
 					image.attr("data-AnimatedURL", "animatedImgURL");
 					
-
-//The codes above currently works so that the buttons are generated from input and array
-
 					// Creating class and p tag rating
 					var carDiv = $("<div class='car'>");
 					var p = $("<p>").text("Rated: " + ratingP);
@@ -183,15 +159,15 @@
 
 			var state = $(this).attr("data-StillURL");
 
-			if (state === "stillImgURL") {
+			if (state === "data-StillURL") {
 				$(this).attr("src", $(this).attr("animatedImgURL"));
 				$(this).attr("data-AnimatedURL", "animated");
-				} 
+			} 
 
 			else {
 				$(this).attr("src", $(this).attr("stillImgURL"));
 				$(this).attr("data-StillURL", "still");
-				}
+			}
 		});
 
 
