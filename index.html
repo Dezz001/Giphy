@@ -56,13 +56,15 @@
 
 	</div>
 
-	<div id="addCarsHere"></div>
+	<!-- <div id="addCarsHere"></div> -->
 
 	
 	<script type="text/javascript">
 
-		var topics = ["Porsche", "Ferrari", "Lamborghini","Bugatti", "Maserati", "Bentley", "Audi", "Jaguar"];
+		var topics = ["Porsche 911", "Ferrari 812", "Lamborghini","Bugatti Chiron", "Maserati", "Bentley", "Audi", "Tesla"];
 		var i;
+
+
 
 		// Create buttons 
 		function generateButtons() {
@@ -92,25 +94,32 @@
 
 
 
-        // Event Handler
+        // Takes searched car and push it to the array
 	    $("#add-car").on("click", function(event) {
 
 	        event.preventDefault();
 
-
 	        var car = $("#car-input").val().trim();
+
+			// Prevents an empty input field from creating a button
+			if (car == "") {
+				return false;
+			}
 
 	        // Pushing text box content to the array
 	        topics.push(car);
 
 
 	        generateButtons();
+
+
 	    });
 
 		generateButtons();
 
 
-//The codes above currently works so that the buttons are generated from input and array
+
+
 
 
 
@@ -127,38 +136,67 @@
 	        	url: queryURL, 
 	        	method: "GET"
 	        })
+
 	        .done(function(response) {
 	          
 		        for(var i = 0; i < 10; i++) {
 
+					var stillImgURL = response["data"][i]["images"]["fixed_height_still"]["url"];
+					var animatedImgURL = response["data"][i]["images"]["fixed_height"]["url"];
+					var ratingP = response["data"][i]["rating"];
+					
+					// Assigning element to hold the still and animated images
+					var image = $("<img>").attr("src", stillImgURL);
 
-				var stillImgURL = response["data"][i]["images"]["fixed_height_still"]["url"];
-				var animatedImgURL = response["data"][i]["images"]["fixed_height"]["url"];
-				var ratingP = response["data"][i]["rating"];
-				
-				// Assigning element to hold the images
-				var image = $("<img>").attr("src", stillImgURL);
-				var image = $("<img>").attr("src", animatedImgURL);
-				
-				// Creating class and p tag
-				var carDiv = $("<div class='car'>");
-				var p = $("<p>").text("Rated: " + ratingP);
-				
-				// Appending image and p tag to div
-				carDiv.append(image);
-				carDiv.append(p);
-				
-				$("#cars-view").prepend(carDiv);
+					image.attr("data-StillURL", "stillImgURL");
 
-		        console.log("Response: "+ response.data);
-				console.log("Car: " + car);
-				console.log("Still Image URL: " + stillImgURL);
-				console.log("Animated Image URL: " + animatedImgURL);
-				console.log("Rating: " + ratingP);
+
+					image.attr("data-AnimatedURL", "animatedImgURL");
+					
+
+//The codes above currently works so that the buttons are generated from input and array
+
+					// Creating class and p tag rating
+					var carDiv = $("<div class='car'>");
+					var p = $("<p>").text("Rated: " + ratingP);
+					
+					// Appending images and rating to div
+					carDiv.append(image);
+					carDiv.append(p);
+					
+					// Attaching the newly built carDiv to the id for window viewing
+					$("#cars-view").prepend(carDiv);
+
+					// Testing for Giphy paths
+			        console.log("Response: "+ response.data);
+					console.log("Car: " + car);
+					console.log("Still Image URL: " + stillImgURL);
+					console.log("Animated Image URL: " + animatedImgURL);
+					console.log("Rating: " + ratingP);
 				}
 				
 	        });
 		}
+
+		// Allows switch between still and animated gifs
+		$(".carDiv").on("click", function() {
+
+			var state = $(this).attr("data-StillURL");
+
+			if (state === "stillImgURL") {
+				$(this).attr("src", $(this).attr("animatedImgURL"));
+				$(this).attr("data-AnimatedURL", "animated");
+				} 
+
+			else {
+				$(this).attr("src", $(this).attr("stillImgURL"));
+				$(this).attr("data-StillURL", "still");
+				}
+		});
+
+
+
+
 
 	</script>
 
